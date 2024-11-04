@@ -2,8 +2,10 @@ from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 
+from .controllers import order_details
+
 from .models import models, schemas
-from .controllers import orders, sandwiches, resources, recipes, order_details
+from .controllers import orders, sandwiches, resources, recipes
 from .dependencies.database import engine, get_db
 
 models.Base.metadata.create_all(bind=engine)
@@ -66,7 +68,7 @@ def read_one_sandwich(sandwich_id: int, db: Session= Depends(get_db)):
         raise HTTPException(status_code=404, detail=f"Sandwich with id {sandwich_id} does not exist.")
     return sandwich
 
-@app.get("/sandwich/", response_model=list[schemas.Sandwich], tag=["Sandwiches"])
+@app.get("/sandwich/", response_model=list[schemas.Sandwich], tags=["Sandwiches"])
 def read_all_sandwiches(db: Session = Depends(get_db)):
     return sandwiches.read_all(db)
 
